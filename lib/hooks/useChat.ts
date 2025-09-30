@@ -30,7 +30,7 @@ interface UseChatResult {
   isTyping: boolean;
   typingUser: string | null;
   onlineUsers: OnlineUser[];
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, file?: File) => Promise<void>;
   startTyping: () => void;
   stopTyping: () => void;
   markAsRead: () => Promise<void>;

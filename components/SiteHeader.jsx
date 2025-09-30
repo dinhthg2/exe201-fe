@@ -6,8 +6,7 @@ import dynamic from 'next/dynamic';
 const DarkModeToggle = dynamic(()=>import('./DarkModeToggle.jsx'), { ssr:false });
 
 export default function SiteHeader(){
-  let authSafe = {};
-  try { authSafe = useAuth() || {}; } catch { authSafe = {}; }
+  const authSafe = useAuth() || {};
   const { user = null, logout = ()=>{} } = authSafe;
   return (
   <header className="surface-light border-b bg-[#e2f7ff]/80 backdrop-blur z-10">

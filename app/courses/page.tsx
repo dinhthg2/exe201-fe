@@ -381,7 +381,7 @@ export default function CoursesCatalogPage() {
             <div className="flex items-center gap-4">
               <div className="text-sm font-medium text-gray-900 dark:text-white">
                 Tìm thấy <span className="text-blue-600 dark:text-blue-400 font-bold">{filtered.length}</span> khóa học
-                {search && <span className="text-gray-500"> cho "{search}"</span>}
+                {search && <span className="text-gray-500"> cho &quot;{search}&quot;</span>}
               </div>
               {(subject !== 'Tất cả' || track !== 'all' || semester !== 'all' || search) && (
                 <button

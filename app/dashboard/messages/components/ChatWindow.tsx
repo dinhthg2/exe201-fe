@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowLeftIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
 import useChat from '../../../../lib/hooks/useChat';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'; // Import EmojiPicker
+import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react'; // Import EmojiPicker
 
 interface Message {
   id: string;
@@ -68,6 +68,10 @@ export default function ChatWindow({
     error
   } = useChat(conversationId, currentUserId);
 
+  // Temporary wrapper to allow sending file until types propagate everywhere
+  const sendMessageWithFile = (content: string, file?: File) =>
+    (sendMessage as unknown as (c: string, f?: File) => Promise<void>)(content, file);
+
   // Get current conversation info
   const currentConversation = conversations.find(c => c.id === conversationId);
   const otherUser = currentConversation?.participants[0];
@@ -118,7 +122,7 @@ export default function ChatWindow({
 
     try {
       console.log('Attempting to send message:', messageContent, 'file:', fileToSend);
-      await sendMessage(messageContent, fileToSend || undefined); // Pass captured file
+      await sendMessageWithFile(messageContent, fileToSend || undefined); // Pass captured file
 
       // Clear file input only after successful send to avoid dropping the file prematurely
       setSelectedFile(null);
@@ -421,7 +425,7 @@ export default function ChatWindow({
             {/* Emoji Picker */}
             {showEmojiPicker && (
               <div className="absolute bottom-full right-0 mb-2 z-10">
-                <EmojiPicker onEmojiClick={onEmojiClick} theme="light" width="100%" />
+                <EmojiPicker onEmojiClick={onEmojiClick} theme={Theme.LIGHT} width="100%" />
               </div>
             )}
           </div>
