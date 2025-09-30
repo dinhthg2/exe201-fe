@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mutual Matching Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .candidate { border: 1px solid #ddd; padding: 10px; margin: 10px; border-radius: 5px; }
+        .mutual { border-color: #ff6b6b; background-color: #ffe0e0; }
+        button { padding: 10px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔥 Mutual Matching Test</h1>
+    <p>Test the mutual matching system by searching for candidates with different criteria.</p>
+    
+    <div>
+        <h3>Search Parameters:</h3>
+        <input type="text" id="specialization" placeholder="Specialization (e.g., Software Engineering)" style="margin: 5px; padding: 5px;" />
+        <input type="number" id="semester" placeholder="Semester (e.g., 4)" style="margin: 5px; padding: 5px;" />
+        <input type="text" id="course_code" placeholder="Course Code (e.g., CSD201)" style="margin: 5px; padding: 5px;" />
+        <input type="text" id="subject" placeholder="Subject (e.g., Data Structures)" style="margin: 5px; padding: 5px;" />
+        <button onclick="searchCandidates()">🔍 Search Candidates</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        async function searchCandidates() {
+            const specialization = document.getElementById('specialization').value;
+            const semester = document.getElementById('semester').value;
+            const course_code = document.getElementById('course_code').value;
+            const subject = document.getElementById('subject').value;
+
+            const params = new URLSearchParams();
+            if (specialization) params.set('specialization', specialization);
+            if (semester) params.set('semester', semester);
+            if (course_code) params.set('course_code', course_code);
+            if (subject) params.set('subject', subject);
+
+            try {
+                const token = prompt('Enter your auth token:');
+                const response = await fetch(`/api/candidates/search?${params.toString()}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+                }
+
+                const candidates = await response.json();
+                displayResults(candidates);
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayResults(candidates) {
+            const resultsDiv = document.getElementById('results');
+            
+            if (candidates.length === 0) {
+                resultsDiv.innerHTML = '<div>No candidates found.</div>';
+                return;
+            }
+
+            const mutualCount = candidates.filter(c => c.isMutualMatch).length;
+            
+            let html = `<h3>Results: ${candidates.length} candidates found</h3>`;
+            if (mutualCount > 0) {
+                html += `<div style="color: #ff6b6b; font-weight: bold;">🔥 ${mutualCount} mutual matches!</div>`;
+            }
+
+            candidates.forEach(candidate => {
+                const mutualClass = candidate.isMutualMatch ? 'mutual' : '';
+                const mutualBadge = candidate.isMutualMatch ? '<span style="color: #ff6b6b; font-weight: bold;">🔥 MUTUAL</span>' : '';
+                
+                html += `
+                    <div class="candidate ${mutualClass}">
+                        <h4>${candidate.name} ${mutualBadge}</h4>
+                        <p><strong>Specialization:</strong> ${candidate.specialization || 'N/A'}</p>
+                        <p><strong>Semester:</strong> ${candidate.semester || 'N/A'}</p>
+                        <p><strong>Subject:</strong> ${candidate.subject || 'N/A'}</p>
+                        <p><strong>Bio:</strong> ${candidate.bio || 'N/A'}</p>
+                        <p><strong>ID:</strong> ${candidate.id}</p>
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('specialization').value = '';
+            document.getElementById('semester').value = '';
+            document.getElementById('course_code').value = '';
+            document.getElementById('subject').value = '';
+        }
+
+        // Pre-fill test data
+        document.getElementById('specialization').value = 'Software Engineering';
+        document.getElementById('semester').value = '4';
+        document.getElementById('course_code').value = 'CSD201';
+        document.getElementById('subject').value = 'Data Structures';
+    </script>
+</body>
+</html>

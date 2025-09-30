@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 160 84% 39%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 160 84% 39%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground;
+  }
+}
+
+/* StudyMate Dashboard Styles - modern pastel */
+.studymate-gradient { background: linear-gradient(135deg, #93c5fd 0%, #c4b5fd 100%); }
+.studymate-card { border-radius: 14px; box-shadow: 0 6px 12px rgba(0,0,0,.06); transition: transform .2s ease, box-shadow .2s ease; }
+.studymate-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.08); }
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@media (prefers-color-scheme: dark) {
+	:root:not(.light) body { @apply bg-slate-900 text-slate-100; }
+}
+
+.dark body { @apply bg-slate-900 text-slate-100; }
+
+/* Dark variants adjustments: avoid blanket overriding all .bg-white to preserve intended white surfaces */
+.dark .text-gray-600 { color: #94a3b8 !important; }
+/* Provide a more visible border tone in dark mode */
+.dark .border { border-color: #334155 !important; }
+
+/* Light mode helper: ensure pure white text has contrast with very light backgrounds */
+:root:not(.dark) .text-white { text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+
+/* Scrollbar utility for combobox */
+.thin-scroll::-webkit-scrollbar { width: 4px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+.thin-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+.dark .thin-scroll::-webkit-scrollbar-thumb { background: #64748b; }
+
+/* Line clamp utilities */
+.line-clamp-5 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+@layer utilities {
+	/* Heading utility to ensure consistent readable color */
+	.heading-primary { @apply text-sky-900 dark:text-slate-100; }
+	/* Utility to avoid pure white text (can wash out / disappear with overlays) */
+	.text-contrast { @apply text-sky-900 dark:text-slate-100; }
+	.text-on-dark { @apply text-slate-50; }
+	.logo-svg { background: transparent !important; }
+}
+
+/* Utility: force dark text on light surfaces (e.g., headers/cards) even in dark mode */
+@layer utilities {
+	.surface-light,
+	.surface-light :is(a, span, p, li, button, h1, h2, h3, h4, h5, h6) {
+		--tw-text-opacity: 1;
+		color: rgb(51 65 85 / var(--tw-text-opacity)) !important; /* #334155 */
+	}
+	/* Neutralize inner text utilities to inherit the surface color */
+	.surface-light :is([class*="text-"], [class*="dark:text-"]) {
+		color: inherit !important;
+	}
+	.surface-light svg {
+		color: currentColor;
+		fill: currentColor;
+		stroke: currentColor;
+	}
+}
+
+/* Auto-detect common light surfaces in dark scheme and keep readable text globally */
+@layer utilities {
+	/* prefers-color-scheme dark (no .dark class) */
+	@media (prefers-color-scheme: dark) {
+		:root:not(.light) :is(
+			.bg-white,
+			.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+			.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+			[class*="bg-white/"],
+			[class*="bg-\\[\\#e2f7ff\\]"],
+			[class*="bg-\\[\\#b9edff\\]"]
+		) {
+			--tw-text-opacity: 1;
+			color: rgb(51 65 85 / var(--tw-text-opacity)) !important; /* #334155 */
+		}
+		:root:not(.light) :is(
+			.bg-white,
+			.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+			.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+			[class*="bg-white/"],
+			[class*="bg-\\[\\#e2f7ff\\]"],
+			[class*="bg-\\[\\#b9edff\\]"]
+		) :is([class*="text-"], [class*="dark:text-"]) { color: inherit !important; }
+		:root:not(.light) :is(
+			.bg-white,
+			.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+			.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+			[class*="bg-white/"],
+			[class*="bg-\\[\\#e2f7ff\\]"],
+			[class*="bg-\\[\\#b9edff\\]"]
+		) svg { color: currentColor; fill: currentColor; stroke: currentColor; }
+	}
+
+	/* .dark class mode */
+	.dark :is(
+		.bg-white,
+		.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+		.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+		[class*="bg-white/"],
+		[class*="bg-\\[\\#e2f7ff\\]"],
+		[class*="bg-\\[\\#b9edff\\]"]
+	) {
+		--tw-text-opacity: 1;
+		color: rgb(51 65 85 / var(--tw-text-opacity)) !important; /* #334155 */
+	}
+	.dark :is(
+		.bg-white,
+		.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+		.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+		[class*="bg-white/"],
+		[class*="bg-\\[\\#e2f7ff\\]"],
+		[class*="bg-\\[\\#b9edff\\]"]
+	) :is([class*="text-"], [class*="dark:text-"]) { color: inherit !important; }
+	.dark :is(
+		.bg-white,
+		.bg-gray-50, .bg-slate-50, .bg-neutral-50, .bg-zinc-50, .bg-stone-50,
+		.bg-sky-50, .bg-orange-50, .bg-yellow-50,
+		[class*="bg-white/"],
+		[class*="bg-\\[\\#e2f7ff\\]"],
+		[class*="bg-\\[\\#b9edff\\]"]
+	) svg { color: currentColor; fill: currentColor; stroke: currentColor; }
+}
+
+
