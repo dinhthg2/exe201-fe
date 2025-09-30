@@ -518,7 +518,9 @@ export default function WalletPage() {
             </Card>
           </div>
         )}
-      {showTopUpModal && <TopUpModal />}
       </div>
-    );
+
+      {showTopUpModal && <TopUpModal />}
+    </div>
+  );
 }
